@@ -1,0 +1,8 @@
+import hashlib
+ # Text to hash
+ text = "This is the message to be hashed.”
+ # Create a SHA-1 hash object and feed it the encoded text
+ sha1_hash = hashlib.sha1(text.encode('utf-8'))
+ # Get the hexadecimal digest of the hash
+ digest = sha1_hash.hexdigest()
+ print("SHA-1 Digest:", digest)
