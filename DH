@@ -1,0 +1,45 @@
+html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>DH Key Exchange</title>
+</head>
+<body>
+  <h2>Diffie-Hellman Short Demo</h2>
+  <script>
+    // Calculates (a^b) mod p
+    function modPow(a, b, p) {
+      let result = 1;
+      a = a % p;
+      while (b > 0) {
+        if (b % 2 === 1) result = (result * a) % p;
+        b = Math.floor(b / 2);
+        a = (a * a) % p;
+      }
+      return result;
+    }
+    
+    // 1. Get Public and Private Keys
+    let P = parseInt(prompt("Enter Prime P:"));
+    let G = parseInt(prompt("Enter Root G:"));
+    let a = parseInt(prompt("Enter Alice's private key (a):"));
+    let b = parseInt(prompt("Enter Bob's private key (b):"));
+
+    // 2. Compute Public Exchange Values
+    let X = modPow(G, a, P); // Alice's public key
+    let Y = modPow(G, b, P); // Bob's public key
+
+    // 3. Compute Shared Secret
+    let secretA = modPow(Y, a, P); // Alice computes (Y^a mod P)
+    let secretB = modPow(X, b, P); // Bob computes (X^b mod P)
+
+    // 4. Display Result
+    document.write(`P: ${P}, G: ${G}<br>`);
+    document.write(`Alice's Private: ${a}, Bob's Private: ${b}<br>`);
+    document.write(`Alice's Public (X): ${X}, Bob's Public (Y): ${Y}<br>`);
+    document.write(`Shared Secret (Alice): ${secretA}<br>`);
+    document.write(`Shared Secret (Bob): ${secretB}<br>`);
+    document.write(`<b>Match? ${secretA === secretB}</b>`);
+  </script>
+</body>
+</html>
