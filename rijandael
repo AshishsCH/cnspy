@@ -1,0 +1,13 @@
+ from py3rijndael import RijndaelCbc, Pkcs7Padding
+ key = b'0123456789abcdef0123456789abcdef'            
+iv = b'abcdef9876543210abcdef9876543210'             
+block_size = 32
+ # 32 bytes
+ # 32 bytes
+ rijndael = RijndaelCbc(key=key, iv=iv, padding=Pkcs7Padding(block_size),
+ block_size=block_size)
+ plaintext = b'Rijndael block cipher test message.'
+ ciphertext = rijndael.encrypt(plaintext)
+decrypted = rijndael.decrypt(ciphertext)
+ print("Encrypted:", ciphertext.hex())
+ print("Decrypted:", decrypted.decode("utf-8"))
