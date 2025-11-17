@@ -1,0 +1,8 @@
+ import hashlib
+ def md5_digest(text):
+   # Encode the text to bytes, compute MD5 hash, and get the hex digest
+   return hashlib.md5(text.encode('utf-8')).hexdigest()
+ # Example usage
+ text = "Your text here"
+ digest = md5_digest(text)
+ print("MD5 digest:", digest)
