@@ -1,0 +1,14 @@
+ from Crypto.Cipher import DES
+ from Crypto.Util.Padding import pad, unpad
+ from Crypto.Random import get_random_bytes
+ key = get_random_bytes(8)  # DES uses 8 bytes (64 bits) for key
+ iv = get_random_bytes(8)   # DES uses 8 bytes for IV
+ message = b"This is a secret message."
+ cipher = DES.new(key, DES.MODE_CBC, iv)
+ padded = pad(message, DES.block_size)  # Pad to 8-byte block size
+ encrypted = cipher.encrypt(padded)
+ print("Encrypted (hex):", encrypted.hex())
+ decipher = DES.new(key, DES.MODE_CBC, iv)
+ decrypted_padded = decipher.decrypt(encrypted)
+ decrypted = unpad(decrypted_padded, DES.block_size)
+ print("Decrypted:", decrypted.decode('utf-8'))
