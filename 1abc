@@ -1,0 +1,68 @@
+ import java.util.Scanner;
+ public class cipher{
+   static String caesar(String text, int shift, boolean encrypt) {
+       shift = encrypt ? shift % 26 : (26 - shift % 26);
+       StringBuilder sb = new StringBuilder();
+       for (char c : text.toCharArray()) {
+           if (Character.isLetter(c)) {
+               char base = Character.isUpperCase(c) ? 'A' : 'a';
+               sb.append((char)((c - base + shift) % 26 + base));
+           } else sb.append(c);
+       }
+       return sb.toString();
+   }
+   static String substitution(String text, String key, boolean encrypt) {
+       key = key.toUpperCase();
+       StringBuilder sb = new StringBuilder();
+       for (char c : text.toCharArray()) {
+           if (Character.isLetter(c)) {
+               boolean upper = Character.isUpperCase(c);
+               char ch = Character.toUpperCase(c);
+               char substitute = encrypt ? key.charAt(ch - 'A') : (char)
+ (key.indexOf(ch) + 'A');
+               sb.append(upper ? substitute : Character.toLowerCase(substitute));
+           } else sb.append(c);
+       }
+       return sb.toString();
+   }
+   static int mod26(int x) { return (x % 26 + 26) % 26; }
+   static String hill(String text, int[][] key, boolean encrypt) {
+       text = text.toUpperCase().replaceAll("[^A-Z]", "");
+       if (text.length() % 2 != 0) text += "X";
+       int det = mod26(key[0][0]*key[1][1] - key[0][1]*key[1][0]);
+       int detInv = -1;
+       for (int i = 0; i < 26; i++)
+           if ((det*i) % 26 == 1) { detInv = i; break; }
+       if (detInv == -1) throw new RuntimeException("Not invertible");
+       int[][] inv = new int[][] {
+           {mod26(key[1][1]*detInv), mod26(-key[0][1]*detInv)},
+           {mod26(-key[1][0]*detInv), mod26(key[0][0]*detInv)}
+       };
+       int[][] mat = encrypt ? key : inv;
+       StringBuilder sb = new StringBuilder();
+       for (int i = 0; i < text.length(); i+=2) {
+           int[] v = {text.charAt(i)-'A', text.charAt(i+1)-'A'};
+           int[] r = new int[2];
+           r[0] = mod26(mat[0][0]*v[0] + mat[0][1]*v[1]);
+           r[1] = mod26(mat[1][0]*v[0] + mat[1][1]*v[1]);
+           sb.append((char)(r[0]+'A')).append((char)(r[1]+'A'));
+       }
+       return sb.toString();
+   }
+   public static void main(String[] args) {
+       Scanner s = new Scanner(System.in);
+       System.out.print("Caesar text: "); String cText = s.nextLine();
+       System.out.print("Shift: "); int shift = s.nextInt(); s.nextLine();
+       System.out.println("Enc: " + caesar(cText, shift, true));
+       System.out.println("Dec: " + caesar(cText, shift, false));
+       System.out.print("\nSubstitution text: "); String subText = s.nextLine();
+       System.out.print("Key (26 chars): "); String key = s.nextLine();
+       System.out.println("Enc: " + substitution(subText, key, true));
+       System.out.println("Dec: " + substitution(subText, key, false));
+       System.out.print("\nHill text: "); String hText = s.nextLine();
+       int[][] hillKey = {{3,3}, {2,5}};
+       System.out.println("Enc: " + hill(hText, hillKey, true));
+       System.out.println("Dec: " + hill(hText, hillKey, false));
+       s.close();
+   }
+ }
